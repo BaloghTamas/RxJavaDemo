@@ -7,22 +7,20 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private TextView textView;
     private Button button;
-    private Subscription subscription;
-    private ObservableStore observableStore;
+    private Disposable disposable;
     private SeekBar seekBar;
-    private Observable<Integer> observableSeekbar;
+    private Observable<Integer> observableSeekBar;
     private Observable<String> stringObservable;
-    private Subscription subscription2;
+    private Disposable disposable2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seekBar);
 
         stringObservable = ObservableStore.getBetterStringObservable();
-        observableSeekbar = ObservableStore.createObservableFromSeekBar(seekBar);
+        observableSeekBar = ObservableStore.createObservableFromSeekBar(seekBar);
 
         button.setOnClickListener(v -> {
             startStringObservable();
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startStringObservable() {
-        subscription = Observable.combineLatest(stringObservable, observableSeekbar, (s, integer) -> new TextWithColor(s, integer))
+        disposable = Observable.combineLatest(stringObservable, observableSeekBar, (s, integer) -> new TextWithColor(s, integer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::onStringWithColorReceived, this::onError, this::onFinished);
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startTimeObservable() {
-        subscription2 = ObservableStore.getTimeFromServerObservable()
+        disposable2 = ObservableStore.getTimeFromServerObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::onTimeReceived, this::onError);
@@ -63,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (subscription != null) {
-            subscription.unsubscribe();
+        if (disposable != null) {
+            disposable.dispose();
         }
 
-        if (subscription2 != null) {
-            subscription2.unsubscribe();
+        if (disposable2 != null) {
+            disposable2.dispose();
         }
         super.onDestroy();
     }

@@ -6,24 +6,26 @@ import android.widget.SeekBar;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 public class ObservableStore {
 
 
     public static Observable<String> getBetterStringObservable() {
-        return Observable.defer(() -> Observable.timer(0, 2, TimeUnit.SECONDS).map(aLong -> {
+        return Observable.defer(() -> Observable.interval(2, TimeUnit.SECONDS, Schedulers.computation()).map(aLong -> {
             int ms = aLong.intValue();
             switch (ms % 4) {
                 case 0:
-                    return "Alma";
+                    return "KitKat";
                 case 1:
-                    return "Körte";
+                    return "Lollipop";
                 case 2:
-                    return "Szilva";
+                    return "Marshmallow";
                 case 3:
-                    return "Barack";
+                    return "Nougat";
             }
             return null;
         }));

@@ -10,7 +10,7 @@ import java.net.URL;
 
 public class Network {
 
-    public static final String URL = "http://www.timeapi.org/utc/now";
+    public static final String URL = "http://date.jsontest.com/";
 
     public static String getTimeFromApi() throws IOException {
         URL url = new URL(URL);
