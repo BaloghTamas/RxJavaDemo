@@ -6,7 +6,6 @@ import android.widget.SeekBar;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -33,26 +32,23 @@ public class ObservableStore {
 
 
     public static Observable<Integer> createObservableFromSeekBar(SeekBar seekBar) {
-        return Observable.create(subscriber -> {
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    int color = Color.HSVToColor(new float[]{((float) progress) / 100.0f * 360.0f, 0.6f, 0.6f});
-                    subscriber.onNext(color);
-                }
+        return Observable.create(subscriber -> seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int color = Color.HSVToColor(new float[]{((float) progress) / 100.0f * 360.0f, 0.6f, 0.6f});
+                subscriber.onNext(color);
+            }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
-                }
+            }
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
-                }
-            });
-
-        });
+            }
+        }));
 
     }
 
