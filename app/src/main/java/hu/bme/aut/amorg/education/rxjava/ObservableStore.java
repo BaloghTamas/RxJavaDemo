@@ -16,7 +16,7 @@ public class ObservableStore {
     public static Observable<String> getBetterStringObservable() {
         return Observable.defer(() -> Observable.interval(2, TimeUnit.SECONDS, Schedulers.computation()).map(aLong -> {
             int ms = aLong.intValue();
-            switch (ms % 4) {
+            switch (ms % 6) {
                 case 0:
                     return "KitKat";
                 case 1:
@@ -25,6 +25,10 @@ public class ObservableStore {
                     return "Marshmallow";
                 case 3:
                     return "Nougat";
+                case 4:
+                    return "Oreo";
+                case 5:
+                    return "P...";
             }
             return null;
         }));

@@ -16,19 +16,19 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     private Button button;
-    private Disposable disposable;
+    private Disposable stringDisposable;
     private SeekBar seekBar;
     private Observable<Integer> observableSeekBar;
     private Observable<String> stringObservable;
-    private Disposable disposable2;
+    private Disposable networkDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.demoTextView);
-        button = (Button) findViewById(R.id.startButton);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        textView = findViewById(R.id.demoTextView);
+        button = findViewById(R.id.startButton);
+        seekBar = findViewById(R.id.seekBar);
 
         stringObservable = ObservableStore.getBetterStringObservable();
         observableSeekBar = ObservableStore.createObservableFromSeekBar(seekBar);
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startStringObservable() {
-        disposable = Observable.combineLatest(stringObservable, observableSeekBar, (s, integer) -> new TextWithColor(s, integer))
+        stringDisposable = Observable.combineLatest(stringObservable, observableSeekBar, TextWithColor::new)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::onStringWithColorReceived, this::onError, this::onFinished);
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startTimeObservable() {
-        disposable2 = ObservableStore.getTimeFromServerObservable()
+        networkDisposable = ObservableStore.getTimeFromServerObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::onTimeReceived, this::onError);
@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (disposable != null) {
-            disposable.dispose();
+        if (stringDisposable != null) {
+            stringDisposable.dispose();
         }
 
-        if (disposable2 != null) {
-            disposable2.dispose();
+        if (networkDisposable != null) {
+            networkDisposable.dispose();
         }
         super.onDestroy();
     }
