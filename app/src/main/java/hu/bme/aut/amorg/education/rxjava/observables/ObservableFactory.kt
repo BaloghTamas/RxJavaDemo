@@ -4,9 +4,9 @@ package hu.bme.aut.amorg.education.rxjava.observables
 import android.graphics.Color
 import android.widget.SeekBar
 import hu.bme.aut.amorg.education.rxjava.network.TimeApi
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 object ObservableFactory {
